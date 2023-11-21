@@ -122,7 +122,14 @@ export default function Navbar() {
                 {localStorage.getItem("username")}
               </NavLink>
             )}
-            <button className="btn btn-white mr-2">
+
+            {loginStatus && localStorage.getItem("Usertype") === "admin" && (
+              <NavLink to="/adminhome" className="btn btn-white mr-2">
+                {localStorage.getItem("username")}
+              </NavLink>
+            )}
+
+            <button onClick={() => navigate('/')} className="btn btn-white mr-2">
               <i className="fa fa-home"></i>
             </button>
 

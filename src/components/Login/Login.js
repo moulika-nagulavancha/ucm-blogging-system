@@ -28,6 +28,7 @@ function Login() {
       localStorage.setItem("username", json.username);
 
       if (json.userType === "admin") {
+        localStorage.setItem("Usertype",json.userType);
         setTimeout(() => {
           navigate("/adminHome");
           window.location.reload(true);
