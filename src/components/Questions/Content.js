@@ -454,7 +454,7 @@ export default function Content(props) {
                           </p>
                         </div>
                       ))}
-                      <p onClick={() => setShow(!show)}>Add a comment</p>
+                      {loginstatus === true ? <p onClick={() => setShow(!show)}>Add a comment</p> : <p onClick={() => navigate("/login")}>Add a comment</p>}
                       {show && (
                         <div className="title">
                           <form
