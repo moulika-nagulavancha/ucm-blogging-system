@@ -2,10 +2,6 @@ const express = require("express");
 
 const fetchuser = require("../middleware/fetchuser");
 const Comment = require("../models/Comment");
-const { route } = require("./questions");
-
-const LocalStorage = require("node-localstorage").LocalStorage;
-var localStorage = new LocalStorage("./scratch");
 
 const router = express.Router();
 
@@ -19,7 +15,7 @@ router.post("/addcomment/:id", fetchuser, async (req, res) => {
       comment: req.body.comment,
     });
 
-    res.json({ Success: "Added Commnet Successfully", status: true });
+    res.json({ Success: "Added Comment Successfully", status: true });
   } catch (error) {
     console.log(error.message);
     res.status(400).send("Internal Server Error");
