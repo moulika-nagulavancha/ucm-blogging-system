@@ -22,7 +22,7 @@ export default function Editor(props) {
     }
 
     const handleSubmit = async (e) => {
-
+        console.log(credentials.members);
         e.preventDefault();
 
         const response = await fetch('http://localhost:5000/api/question/addquestion', {
@@ -31,7 +31,7 @@ export default function Editor(props) {
                 'Content-Type': 'application/json'
             },
 
-            body: JSON.stringify({ title: credentials.title, question: value, tags: credentials.tags }),
+            body: JSON.stringify({ title: credentials.title, question: value, tags: credentials.tags, members: credentials.members }),
         });
 
         const json = await response.json()
@@ -42,7 +42,6 @@ export default function Editor(props) {
             window.scrollTo(0, 0)
         }
         setHtml(parse(value));
-        // console.log(json["desc"]);
     }
 
     return (
@@ -70,7 +69,7 @@ export default function Editor(props) {
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Writing a Good Question</h5>
-                        <p class="card-text">You’re ready to ask a programming-related question and this form will help guide you through the process.</p>
+                        <p class="card-text">You’re ready to ask a question and this form will help guide you through the process.</p>
                         <h5>Steps</h5>
                         <ul>
                             <li>Summarize your problem in a one-line title.</li>
@@ -99,7 +98,6 @@ export default function Editor(props) {
                         value={props.initialValue}
                         config={config}
                         tabIndex={1}
-                        //   onBlur={(newContent) => getValue(newContent)}
                         onChange={(newContent) => getValue(newContent)}
 
                     />
@@ -109,7 +107,17 @@ export default function Editor(props) {
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Question Tags</label>
                                 <input type="text" name="tags" onChange={onChange} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Tags" />
-                                <small id="emailHelp" class="form-text text-muted">Enter Question Tags</small>
+                                <small id="emailHelp" class="form-text text-muted">Enter Question Tag</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Members (Comma separated)</label>
+                                <input type="text" name="members" onChange={onChange} class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Member names" />
+                                <small id="emailHelp" class="form-text text-muted">Enter member usernames</small>
                             </div>
                         </div>
                     </div>
@@ -117,8 +125,6 @@ export default function Editor(props) {
                     <button type='submit' className="btn btn-primary mt-5 mb-5">Ask Question</button>
                 </form>
             </div>
-
-            {/* <div>{html}</div> */}
         </div>
     )
 }

@@ -1,21 +1,37 @@
 const express = require("express");
 const Question = require("../models/Question");
 const User = require("../models/User");
+const Admin = require("../models/Admin");
 const Answer = require("../models/Answer");
+const LocalStorage = require("node-localstorage").LocalStorage;
+var localStorage = new LocalStorage("./scratch");
 
 const fetchuser = require("../middleware/fetchuser");
 const router = express.Router();
 
 router.post("/addquestion", fetchuser, async (req, res) => {
+  const userMembers = [];
+  if (req.body.members != null && req.body.members.length > 0) {
+    let members = req.body.members.split(',');
+    for (member in members) {
+      let user = await User.findOne({ username: members[member] });
+      if (user != null) {
+        userMembers.push(user._id);
+      }
+    }
+  }
+
   try {
     let question = await Question.create({
       user: req.user.id,
       title: req.body.title,
       question: req.body.question,
       tags: req.body.tags,
+      members: userMembers,
       postedBy: req.user.username,
       votes: 0,
     });
+
     res.json({ Success: "Added Query Successfully", status: true });
   } catch (error) {
     console.log(error.message);
@@ -113,7 +129,12 @@ router.post("/fetchUserQuestions/:username", async (req, res) => {
 
 router.post("/fetchUserFilteredQuestions/:username", async (req, res) => {
   try {
-    let user = await User.findOne({ username: req.params.username });
+    let user = "";
+    if (localStorage.getItem("username") == "admin") {
+      user = await Admin.findOne({username: req.params.username});
+    } else {
+      user = await User.findOne({ username: req.params.username });
+    }
 
     const startDate = req.body.startDate;
     const endDate = req.body.endDate;

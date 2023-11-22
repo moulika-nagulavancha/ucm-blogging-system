@@ -85,9 +85,13 @@ export default function Questions() {
                 <div className="main-container">
                   <div className="main-top">
                     <h2>All Questions</h2>
-                    <NavLink to="/editor">
-                      <button>Ask Question</button>
-                    </NavLink>
+                    {localStorage.getItem("username") != null ? (
+                      <NavLink to="/editor">
+                        <button>Ask Question</button>
+                      </NavLink>
+                    ) : (
+                      <></>
+                    )}
                   </div>
 
                   <div className="main-desc">

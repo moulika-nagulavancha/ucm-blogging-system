@@ -118,13 +118,13 @@ export default function Navbar() {
               </ul>
 
             {loginStatus && localStorage.getItem("Usertype") === "user" && (
-              <NavLink to="/analysis" className="btn btn-white mr-2">
+              <NavLink to="/profile" className="btn btn-white mr-2">
                 {localStorage.getItem("username")}
               </NavLink>
             )}
 
             {loginStatus && localStorage.getItem("Usertype") === "admin" && (
-              <NavLink to="/adminhome" className="btn btn-white mr-2">
+              <NavLink to="/admin" className="btn btn-white mr-2">
                 {localStorage.getItem("username")}
               </NavLink>
             )}

@@ -21,7 +21,7 @@ function Login() {
     });
     const json = await response.json()
 
-    if (json.success != null) {
+    if (json && json.success != null) {
       setState(true);
       window.scrollTo(0, 0);
 
@@ -39,9 +39,9 @@ function Login() {
       month['01'] = "Jan"; month['02'] = "Feb"; month['03'] = "Mar"; month['04'] = "Apr"; month['05'] = "May"; month['06'] = "June";
       month['07'] = "July"; month['08'] = "Aug"; month['09'] = "Sep"; month['10'] = "Oct"; month['11'] = "Nov"; month['12'] = "Dec";
 
-      const year = json.date.substring(0, 4);
-      const mn = json.date.substring(5, 7);
-      console.log(json.date.toLocaleString('default', { month: 'long' }));
+      const year = json && json.date ? json.date.substring(0, 4) : "";
+      const mn = json && json.date ? json.date.substring(5, 7) : "";
+      (year.length > 0 && mn.length > 0) ? console.log(json.date.toLocaleString('default', { month: 'long' })) : console.log("no date and month!");
 
       localStorage.setItem("since", month[mn] + " " + year);
       localStorage.setItem("Usertype",json.userType);

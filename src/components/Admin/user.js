@@ -48,13 +48,8 @@ export default function AdminUser() {
       .then((response) => {
         fetchUsers();
         window.location.reload();
-        return response.json();
+        return ;
       });
-
-    const data = await response.json();
-    if (data.status === "success") {
-      fetchUsers();
-    }
   };
 
   return (

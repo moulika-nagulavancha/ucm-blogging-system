@@ -138,11 +138,8 @@ export default function Adminquestion() {
       }
     ).then((response) => {
       window.location.reload();
-      return response.json();
+      return;
     });
-    const data = await response.json();
-    if (data.status === "success") {
-    }
   };
 
   useEffect(() => {
@@ -209,9 +206,9 @@ export default function Adminquestion() {
                     <div class="d-flex flex-column flex-shrink-0 col-md-2 mt-4 mx-0">
                       {(() => {
                         if (question._id in votes) {
-                            return <div>{votes[question._id]} Votes</div>
+                          return <div>{votes[question._id]} Votes</div>;
                         } else {
-                            return <div>0 Votes</div>
+                          return <div>0 Votes</div>;
                         }
                       })()}
                       {(() => {

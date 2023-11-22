@@ -34,11 +34,9 @@ export default function Posts({ posts }) {
       })
       .then((response) => {
         alert("Answer is deleted refresh the page to see the changes");
-        return response.json();
+        window.location.reload();
+        return;
       });
-    const data = await response.json();
-    if (data.status === "success") {
-    }
   };
 
   useEffect(() => {

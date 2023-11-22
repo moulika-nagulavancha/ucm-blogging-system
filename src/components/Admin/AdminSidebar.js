@@ -13,11 +13,6 @@ export default function AdminSidebar() {
             </NavLink>
           </div>
           <div className="sidebar-option">
-            <NavLink className="sideLink" to="/adminanalysis">
-              Analysis
-            </NavLink>
-          </div>
-          <div className="sidebar-option">
             <NavLink className="sideLink" to="/Adminquestions">
               Manage Questions
             </NavLink>

@@ -6,6 +6,7 @@ const QuestionSchema = new Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref : 'user'
     },
+
     title:{
         type:String,
         required:true,
@@ -20,6 +21,12 @@ const QuestionSchema = new Schema({
         type:String,
         required:true,
     },
+
+    members: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "user" 
+    }],
+
     postedBy:{
         type:String,
         required:true

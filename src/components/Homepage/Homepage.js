@@ -19,7 +19,7 @@ function Homepage() {
                     <div className="row">
                         <div className="col-lg-6 col-md-12 col-xs-12 mx-4">
                             <div className="contents">
-                                <h2 className="head-title">Blogger</h2>
+                                <h2 className="head-title">University Blogging made easy!</h2>
                                 <p>Find the best answers to your questions and help others answer theirs. Blogger is a university-based community space to find and contribute answers to questions.</p>
                             </div>
                             <div className="text-left">

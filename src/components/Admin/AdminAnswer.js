@@ -103,25 +103,6 @@ export default function Adminanswer() {
               <option value={tag}>{tag}</option>
             ))}
           </select>
-
-          <input
-            type="radio"
-            name="status"
-            value="Accepted"
-            onChange={onChange}
-          />
-          <label for="accepted" style={{ fontSize: "14px" }}>
-            Accepted
-          </label>
-          <input
-            type="radio"
-            name="status"
-            value="Not Accepted"
-            onChange={onChange}
-          />
-          <label for="notAccepted" style={{ fontSize: "14px" }}>
-            Not Accepted
-          </label>
         </div>
 
         <div className="questions">

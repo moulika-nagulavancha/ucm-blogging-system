@@ -18,7 +18,6 @@ app.use("/api/question", require("./routes/questions"));
 app.use("/api/answer", require("./routes/answers"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/admin", require("./routes/admin"));
-app.use("/api/tag", require("./routes/tags"));
 
 app.listen(port, () => {
   console.log(`UCM-Blogger app listening at http://localhost:${port}`);
