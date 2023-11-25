@@ -18,10 +18,14 @@ export default function Sidebar() {
                 <Public />
                 <NavLink to="/questions">Questions</NavLink>
               </div>
-              <div className="link-tag">
-                <AccountCircle />
-                <NavLink to="/profile">Profile</NavLink>
-              </div>
+              {localStorage.getItem("username") != null ? (
+                <div className="link-tag">
+                  <AccountCircle />
+                  <NavLink to="/profile">Profile</NavLink>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>

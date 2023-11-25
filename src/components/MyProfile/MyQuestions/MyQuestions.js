@@ -19,9 +19,45 @@ export default function MyQuestions() {
   };
 
   const [questions, setQuestions] = useState([]);
+  const [user, setUser] = useState([]);
 
   const [postPerPage] = useState(4);
   const [currentPage, setcurrentPage] = useState(1);
+
+  const fetchMemberQuestions = async () => {
+    let mQuestions = [];
+    const response = await fetch(
+      `http://localhost:5000/api/question/fetchquestions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((response) => {
+      return response.json();
+    }).then((data) => {
+      if (data.length > 0) {
+        for (let member of data) {
+          if (member.members.length > 0) {
+            if (user && member.members.indexOf(user._id) != -1) {
+              mQuestions.push(member);
+            }
+          } 
+        }
+        setQuestions(mQuestions);
+      }
+    });
+  };
+
+  const getUser = async () => {
+    const currentUser = await fetch(
+      `http://localhost:5000/api/auth/user/${localStorage.getItem("username")}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((user) => setUser(user));
+  };
 
   const fetchAllFilteredQuestions = async () => {
     const response = await fetch(
@@ -66,21 +102,24 @@ export default function MyQuestions() {
   }, [filters]);
 
   useEffect(() => {
+    getUser();
+    if (user) {
+      fetchMemberQuestions();
+    }
+  }, []);
+
+  useEffect(() => {
     fetch(
-      `http://localhost:5000/api/question/fetchUserQuestions/${localStorage.getItem(
-        "username"
-      )}`,
+      `http://localhost:5000/api/question/fetchUserQuestions/${localStorage.getItem("username")}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       }
-    )
-      .then((response) => {
+    ).then((response) => {
         return response.json();
-      })
-      .then((data) => setQuestions(data));
+      }).then((data) => setQuestions(data));
   }, []);
 
   const indexOfLastPost = currentPage * postPerPage;
@@ -112,6 +151,10 @@ export default function MyQuestions() {
               <option value={tag}>{tag}</option>
             ))}
           </select>
+        </div>
+
+        <div className="link-tag">
+          <button onClick={() => fetchMemberQuestions()} className="btn btn-primary mr-2">Manage Member Questions</button>
         </div>
 
         <div className="questions">

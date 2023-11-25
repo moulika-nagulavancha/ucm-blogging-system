@@ -77,6 +77,21 @@ router.post(
   }
 );
 
+router.get("/user/:username", async (req, res) => {
+  try {
+    if (req.params.username == "admin") {
+      const user = await Admin.findOne({ username: req.params.username });
+      res.json(user);
+    } else {
+      const user = await User.findOne({ username: req.params.username });
+      res.json(user);
+    }
+  } catch (error) {
+    console.log(e.message);
+    res.status(500).send("internel server error");
+  }
+});
+
 router.post(
   "/login",
   [

@@ -72,12 +72,21 @@ export default function Search() {
 
               <div className="main">
                 <div className="main-container">
-                  <div className="main-top">
-                    <h2>All Questions</h2>
-                    <NavLink to="/editor">
-                      <button>Ask Question</button>
-                    </NavLink>
-                  </div>
+                  {localStorage.getItem("username") != null ? (
+                    <div className="main-top">
+                      <h2>All Questions</h2>
+                      <NavLink to="/editor">
+                        <button>Ask Question</button>
+                      </NavLink>
+                    </div>
+                  ) : (
+                    <div className="main-top">
+                      <h2>All Questions</h2>
+                      <NavLink to="/login">
+                        <button>Ask Question</button>
+                      </NavLink>
+                    </div>
+                  )}
 
                   <div className="main-desc">
                     <p>{questions.length} Questions</p>

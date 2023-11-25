@@ -26,10 +26,8 @@ export default function Navbar() {
     localStorage.removeItem("Usertype");
 
     setLoginStatus(false);
-
-    window.location.reload(true);
-
     navigate("/");
+    window.location.reload(true);
   };
 
   const searchQuestion = async (e) => {

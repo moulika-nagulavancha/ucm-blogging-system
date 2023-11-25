@@ -131,7 +131,7 @@ router.post("/fetchUserFilteredQuestions/:username", async (req, res) => {
   try {
     let user = "";
     if (localStorage.getItem("username") == "admin") {
-      user = await Admin.findOne({username: req.params.username});
+      user = await Admin.findOne({ username: req.params.username });
     } else {
       user = await User.findOne({ username: req.params.username });
     }

@@ -194,29 +194,6 @@ export default function UpdateQuestion(props) {
               </div>
             </div>
 
-            <div class="card mt-3">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">
-                    Members (Comma separated)
-                  </label>
-                  <input
-                    type="text"
-                    name="members"
-                    onChange={onChange}
-                    class="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
-                    placeholder="Enter member usernames"
-                    value={credentials.members}
-                  />
-                  <small id="emailHelp" class="form-text text-muted">
-                    Enter Member usernames
-                  </small>
-                </div>
-              </div>
-            </div>
-
             <button type="submit" className="btn btn-primary mt-5 mb-5">
               Update Question
             </button>

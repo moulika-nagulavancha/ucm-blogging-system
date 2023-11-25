@@ -85,7 +85,7 @@ export default function Posts({ posts }) {
         }
       })()}
       <ul>
-        {posts.map((question) => (
+        {posts.length > 0 && posts.map((question) => (
           <div className="all-questions">
             <div className="all-questions-container">
               <div className="all-questions-left">
@@ -115,9 +115,9 @@ export default function Posts({ posts }) {
                 >
                   <h4>{question.title}</h4>
                 </NavLink>
-                {question.members.length > 0 &&
+                {localStorage.getItem("username") != null || (question.members.length > 0 &&
                 question.members.indexOf(
-                  localStorage.getItem("username") != null
+                  localStorage.getItem("username") != null)
                 ) ? (
                   <div Style="position: absolute; right: 7%;">
                     <NavLink to={{ pathname: `/updateque/${question._id}` }}>
