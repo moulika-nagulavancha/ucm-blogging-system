@@ -145,6 +145,58 @@ router.delete("/deleteUser/:id", async (req, res) => {
   }
 });
 
+router.post("/blockUser/:id", async (req, res) => {
+  try {
+    const block = "N";
+    const blockedUser = User.findByIdAndUpdate(req.params.id, {
+      $set: { status: block },
+    });
+    console.log(blockedUser);
+    console.log(req.params.id);
+    res.json({ status: "Blocked" });
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.put("/status/:id", async (req, res) => {
+  const id = req.params.id;
+  const status = req.body.status;
+
+  try {
+    const updatedUserStatus = await User.findByIdAndUpdate(
+      id,
+      { $set: { status } },
+      {new: true}
+    );
+
+    if (!updatedUserStatus) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(updatedUserStatus);
+    
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/unblockUser/:id", async (req, res) => {
+  try {
+    const unblock = "Y";
+    const unblockedUser = User.findByIdAndUpdate(req.params.id, {
+      $set: { status: unblock },
+    });
+    console.log(req.params.id);
+    res.json({ status: "Unblocked" });
+  } catch (e) {
+    console.log(e.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 router.delete("/deleteQuestion/:id", async (req, res) => {
   try {
     await Question.findByIdAndRemove(req.params.id, async (err, data) => {

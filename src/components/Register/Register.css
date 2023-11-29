@@ -73,7 +73,7 @@
   text-align: center;
   padding: 60px 32px;
   width: 400px;
-  height: 520px;
+  /* height: 520px; */
   border-radius: 10px;
   transform: translate(-50%, -50%);
   background: rgba(76, 70, 246, 0.04);

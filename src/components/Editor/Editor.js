@@ -111,7 +111,7 @@ export default function Editor(props) {
                             </div>
                         </div>
                     </div>
-
+{/* 
                     <div class="card mt-3">
                         <div class="card-body">
                             <div class="form-group">
@@ -121,6 +121,7 @@ export default function Editor(props) {
                             </div>
                         </div>
                     </div>
+                     */}
 
                     <button type='submit' className="btn btn-primary mt-5 mb-5">Ask Question</button>
                 </form>

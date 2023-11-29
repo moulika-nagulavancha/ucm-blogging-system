@@ -37,10 +37,16 @@ const QuestionSchema = new Schema({
         default:Date.now()
     },
 
-    votes:{
-        type:Number,
-        required:true
-    }
+    votes:[{
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User', 
+        },
+        direction: {
+          type: String,
+          enum: ['up', 'down'],
+        }
+    }]
 })
 
 const question = mongoose.model('question', QuestionSchema);

@@ -19,7 +19,7 @@ function Login() {
       },
       body: JSON.stringify({ email: credentials.email, password: credentials.password }),
     });
-    const json = await response.json()
+    const json = await response.json();
 
     if (json && json.success != null) {
       setState(true);
@@ -48,7 +48,7 @@ function Login() {
 
       if (json.userType === "user") {
         setTimeout(() => {
-          navigate("/");
+          navigate("/questions");
           window.location.reload(true);
         }, 2000);
       }
@@ -56,7 +56,7 @@ function Login() {
 
     }
     else {
-      alert('Invalid Credentials');
+      alert('Invalid Credentials or User is Blocked temporarily');
     }
   }
   const onChange = (e) => {

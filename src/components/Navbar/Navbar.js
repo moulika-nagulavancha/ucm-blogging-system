@@ -103,7 +103,7 @@ export default function Navbar() {
                 Style={{ bsSscrollHheight: "100px" }}
               >
                 <li class="nav-item">
-                  {localStorage.getItem("Usertype") === "user" && (
+                  {loginStatus && localStorage.getItem("Usertype") === "user" && (
                     <a
                       className="nav-link mr"
                       href="/editor"
@@ -127,7 +127,7 @@ export default function Navbar() {
               </NavLink>
             )}
 
-            <button onClick={() => navigate('/')} className="btn btn-white mr-2">
+            <button onClick={() => navigate('/questions')} className="btn btn-white mr-2">
               <i className="fa fa-home"></i>
             </button>
 

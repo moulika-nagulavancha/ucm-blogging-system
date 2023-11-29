@@ -1,6 +1,9 @@
 const express = require("express");
 
 const fetchuser = require("../middleware/fetchuser");
+const User = require("../models/User");
+const Admin = require("../models/Admin");
+
 const Answer = require("../models/Answer");
 const LocalStorage = require("node-localstorage").LocalStorage;
 var localStorage = new LocalStorage("./scratch");
@@ -15,7 +18,7 @@ router.post("/addanswer/:id", fetchuser, async (req, res) => {
       answer: req.body.answer,
       postedId: req.user.id,
       postedBy: req.user.username,
-      votes: 0,
+      votes: [],
     });
 
     res.json({ Success: "Added Answer Successfully", status: true });
@@ -362,17 +365,30 @@ router.post("/findNumberOfAns", async (req, res) => {
   }
 });
 
-router.post("/upvote/:id", async (req, res) => {
+router.post("/vote/:id", async (req, res) => {
   try {
+    let user = await User.findOne({username: req.body.username});
+    if (!user) {
+      user = await Admin.findOne({username: req.body.username});
+    }
+
     const answer = await Answer.findById(req.params.id);
 
-    const vote = answer["votes"] + 1;
+    if (!answer) {
+      return res.status(404).json({ status: "answer_not_found" });
+    }
 
-    const updatedAnswer = await Answer.findByIdAndUpdate(req.params.id, {
-      $set: { votes: vote },
-    });
+    const existingVoteIndex = answer.votes.findIndex(vote => (vote.user.equals(user._id) && vote.direction === req.body.direction));
+    console.log(existingVoteIndex);
+    if (existingVoteIndex == 0) {
+      return res.status(400).json({ status: "already_voted", message: "User has already voted on this answer." });
+    } else {
+      answer.votes.push({ user: user._id, direction: req.body.direction }); 
+    }
 
-    res.json({ status: "upvoted" });
+    const updatedAnswer = await answer.save();
+    res.json({ status: "voted", updatedAnswer });
+
   } catch (error) {
     console.log(error.message);
     res.status(400).send("Internal Server Error");
@@ -384,26 +400,20 @@ router.post("/fetchVotes", async (req, res) => {
   const obj = {};
 
   allAnswers.map((ans) => {
-    obj[ans._id] = ans.votes;
-  });
-  res.json(obj);
-});
+    let upvotesCount = 0;
+    let downvotesCount = 0;
 
-router.post("/downvote/:id", async (req, res) => {
-  try {
-    const answer = await Answer.findById(req.params.id);
-
-    const vote = answer["votes"] - 1;
-
-    const updatedAnswer = await Answer.findByIdAndUpdate(req.params.id, {
-      $set: { votes: vote },
+    ans.votes.forEach(vote => {
+      if (vote.direction === 'up') {
+        upvotesCount++;
+      } else if (vote.direction === 'down') {
+        downvotesCount++;
+      }
     });
 
-    res.json({ status: "downvoted" });
-  } catch (error) {
-    console.log(error.message);
-    res.status(400).send("Internal Server Error");
-  }
+    obj[ans._id] = upvotesCount - downvotesCount;
+  });
+  res.json(obj);
 });
 
 router.post("/acceptanswer/:id", async (req, res) => {

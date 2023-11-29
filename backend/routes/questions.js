@@ -29,7 +29,7 @@ router.post("/addquestion", fetchuser, async (req, res) => {
       tags: req.body.tags,
       members: userMembers,
       postedBy: req.user.username,
-      votes: 0,
+      votes: [],
     });
 
     res.json({ Success: "Added Query Successfully", status: true });
@@ -270,34 +270,28 @@ router.post("/usedtags/:username", async (req, res) => {
   }
 });
 
-router.post("/upvote/:id", async (req, res) => {
+router.post("/vote/:id", async (req, res) => {
   try {
+    let user = await User.findOne({username: req.body.username});
+    if (!user) {
+      user = await Admin.findOne({username: req.body.username});
+    }
+
     const question = await Question.findById(req.params.id);
 
-    const vote = question["votes"] + 1;
+    if (!question) {
+      return res.status(404).json({ status: "question_not_found" });
+    }
 
-    const updatedAnswer = await Question.findByIdAndUpdate(req.params.id, {
-      $set: { votes: vote },
-    });
+    const existingVoteIndex = question.votes.findIndex(vote => (vote.user.equals(user._id) && vote.direction === req.body.direction));
+    if (existingVoteIndex !== -1) {
+      return res.status(400).json({ status: "already_voted", message: "User has already voted on this question." });
+    } else {
+      question.votes.push({ user: user._id, direction: req.body.direction }); 
+    }
 
-    res.json({ status: "upvoted" });
-  } catch (error) {
-    console.log(error.message);
-    res.status(400).send("Internal Server Error");
-  }
-});
-
-router.post("/downvote/:id", async (req, res) => {
-  try {
-    const question = await Question.findById(req.params.id);
-
-    const vote = question["votes"] - 1;
-
-    const updatedAnswer = await Question.findByIdAndUpdate(req.params.id, {
-      $set: { votes: vote },
-    });
-
-    res.json({ status: "downvoted" });
+    const updatedQuestion = await question.save();
+    res.json({ status: "voted", updatedQuestion });
   } catch (error) {
     console.log(error.message);
     res.status(400).send("Internal Server Error");
@@ -307,9 +301,22 @@ router.post("/downvote/:id", async (req, res) => {
 router.post("/fetchVotes/:id", async (req, res) => {
   const question = await Question.findById(req.params.id);
 
-  if (question) {
-    res.json(question.votes);
+  if (!question) {
+    return res.status(404).json({ status: "question_not_found" });
   }
+
+  let upvotesCount = 0;
+  let downvotesCount = 0;
+
+  question.votes.forEach(vote => {
+    if (vote.direction === 'up') {
+      upvotesCount++;
+    } else if (vote.direction === 'down') {
+      downvotesCount++;
+    }
+  });
+
+  res.json({ upvotesCount, downvotesCount });
 });
 
 router.post("/fetchallVotes", async (req, res) => {
@@ -317,7 +324,18 @@ router.post("/fetchallVotes", async (req, res) => {
   const obj = {};
 
   allQuestion.map((que) => {
-    obj[que._id] = que.votes;
+    let upvotesCount = 0;
+    let downvotesCount = 0;
+
+    que.votes.forEach(vote => {
+      if (vote.direction === 'up') {
+        upvotesCount++;
+      } else if (vote.direction === 'down') {
+        downvotesCount++;
+      }
+    });
+    
+    obj[que._id] = upvotesCount - downvotesCount;
   });
   res.json(obj);
 });
@@ -382,15 +400,11 @@ router.post("/unansweredQue", async (req, res) => {
 
 router.post("/search", async (req, res) => {
   try {
+    const keywords = req.query.keyword.split(',').map(keyword => new RegExp(keyword.trim(), 'i'));
     let questions = await Question.find({
-      title: { $regex: req.query.keyword, $options: "i" },
+      title: { $in: keywords },
     });
 
-    if (questions.length === 0) {
-      questions = await Question.find({
-        tags: { $regex: req.query.keyword, $options: "i" },
-      });
-    }
     res.json(questions);
   } catch (error) {
     console.log(error.message);

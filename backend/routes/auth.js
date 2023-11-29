@@ -15,12 +15,18 @@ const router = express.Router();
 router.post(
   "/createuser",
   [
-    body("username", "Name Must have atleast 3 characters").isLength({
+    body("firstname", "First Name Must have atleast 3 characters").isLength({
+      min: 3,
+    }),
+    body("lastname", "Last Name Must have atleast 3 characters").isLength({
+      min: 3,
+    }),
+    body("username", "User Name Must have atleast 3 characters").isLength({
       min: 3,
     }),
     body("email", "Enter a valid email").isEmail(),
-    body("password", "Password must be atleast 5 characters").isLength({
-      min: 5,
+    body("password", "Password must be atleast 3 characters").isLength({
+      min: 3,
     }),
   ],
   async (req, res) => {
@@ -48,9 +54,12 @@ router.post(
       const secPass = await bcrypt.hash(req.body.password, salt);
 
       user = await User.create({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
         username: req.body.username,
         email: req.body.email,
         password: secPass,
+        status: "Y",
       });
 
       const data = {
@@ -117,6 +126,12 @@ router.post(
           return res
             .status(400)
             .json({ error: "Please Enter Correct login Credentials" });
+        }
+
+        if (user.status === "N") {
+          return res
+            .status(400)
+            .json({ error: "This current user is Blocked temporarily!" });
         }
 
         const passwordCompare = await bcrypt.compare(password, user.password);

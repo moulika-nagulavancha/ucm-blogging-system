@@ -17,6 +17,9 @@ export default function Content(props) {
   const [voteStatus, setVoteStatus] = useState({});
   const [loginstatus, setloginstatus] = useState(false);
   const [quevoteStatus, setqueVoteStatus] = useState({});
+  const [qvStatus, setQvStatus] = useState(false);
+  const [avStatus, setAvStatus] = useState(false);
+  const [cantVoteStatus, setCantVoteStatus] = useState(false);
   const [queVote, setQueVote] = useState();
   const [show, setShow] = useState(false);
   const [comments, setComment] = useState({});
@@ -111,21 +114,32 @@ export default function Content(props) {
   const upvoteQue = async (e, id) => {
     if (localStorage.getItem("username") !== null) {
       e.preventDefault();
-      document.getElementById("quedownvotbtn").disabled = false;
-      document.getElementById("queupvotebtn").disabled = true;
+      // document.getElementById("quedownvotbtn").disabled = false;
+      // document.getElementById("queupvotebtn").disabled = true;
 
       const response = await fetch(
-        `http://localhost:5000/api/question/upvote/${id}`,
+        `http://localhost:5000/api/question/vote/${id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            direction: 'up'
+          }),
         }
       );
 
       let json = await response.json();
       setqueVoteStatus(json);
+      if (json.status === 'voted') {
+        setQvStatus(true);
+        window.scrollTo(0,0);
+      } else if (json.status === 'already_voted') {
+        setCantVoteStatus(true);
+        window.scrollTo(0,0);
+      }
     } else {
       navigate("/login");
     }
@@ -134,22 +148,33 @@ export default function Content(props) {
   const downvoteQue = async (e, id) => {
     if (localStorage.getItem("username") !== null) {
       e.preventDefault();
-      document.getElementById("quedownvotbtn").disabled = true;
-      document.getElementById("queupvotebtn").disabled = false;
+      // document.getElementById("quedownvotbtn").disabled = true;
+      // document.getElementById("queupvotebtn").disabled = false;
 
       const response = await fetch(
-        `http://localhost:5000/api/question/downvote/${id}`,
+        `http://localhost:5000/api/question/vote/${id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            direction: 'down'
+          }),
         }
       );
 
       let json = await response.json();
 
       setqueVoteStatus(json);
+      if (json.status === 'voted') {
+        setQvStatus(true);
+        window.scrollTo(0,0);
+      } else if (json.status === 'already_voted') {
+        setCantVoteStatus(true);
+        window.scrollTo(0,0);
+      }
     } else {
       navigate("/login");
     }
@@ -158,22 +183,34 @@ export default function Content(props) {
   const upvote = async (e, id) => {
     if (localStorage.getItem("username") !== null) {
       e.preventDefault();
-      document.getElementById("ansdownvotebtn" + id).disabled = false;
-      document.getElementById("ansupvotebtn" + id).disabled = true;
+      // document.getElementById("ansdownvotebtn" + id).disabled = false;
+      // document.getElementById("ansupvotebtn" + id).disabled = true;
 
       const response = await fetch(
-        `http://localhost:5000/api/answer/upvote/${id}`,
+        `http://localhost:5000/api/answer/vote/${id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            direction: 'up'
+          }),
         }
       );
 
       let json = await response.json();
 
       setVoteStatus(json);
+      console.log(json.status);
+      if (json.status === 'voted') {
+        setAvStatus(true);
+        window.scrollTo(0,0);
+      } else if (json.status === 'already_voted') {
+        setCantVoteStatus(true);
+        window.scrollTo(0,0);
+      }
     } else {
       navigate("/login");
     }
@@ -183,22 +220,33 @@ export default function Content(props) {
     if (localStorage.getItem("username") !== null) {
       e.preventDefault();
 
-      document.getElementById("ansdownvotebtn" + id).disabled = true;
-      document.getElementById("ansupvotebtn" + id).disabled = false;
+      // document.getElementById("ansdownvotebtn" + id).disabled = true;
+      // document.getElementById("ansupvotebtn" + id).disabled = false;
 
       const response = await fetch(
-        `http://localhost:5000/api/answer/downvote/${id}`,
+        `http://localhost:5000/api/answer/vote/${id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            username: localStorage.getItem("username"),
+            direction: 'down'
+          }),
         }
       );
 
       let json = await response.json();
 
       setVoteStatus(json);
+      if (json.status === 'voted') {
+        setAvStatus(true);
+        window.scrollTo(0,0);
+      } else if (json.status === 'already_voted') {
+        setCantVoteStatus(true);
+        window.scrollTo(0,0);
+      }
     } else {
       navigate("/login");
     }
@@ -233,7 +281,7 @@ export default function Content(props) {
 
     let json = await response.json();
 
-    setQueVote(json);
+    setQueVote(json.upvotesCount - json.downvotesCount);
   };
 
   const onChange = (e) => {
@@ -242,7 +290,6 @@ export default function Content(props) {
 
   const addComment = async (e, id) => {
     e.preventDefault();
-    console.log(e);
 
     const response = await fetch(
       `http://localhost:5000/api/comment/addcomment/${id}`,
@@ -295,7 +342,7 @@ export default function Content(props) {
     fetchVotes();
     fetchQueVotes(params.type);
     fetchCommentsForAllAnswers();
-  }, [state, voteStatus, quevoteStatus, question]);
+  }, [state, voteStatus, quevoteStatus, question, cantVoteStatus]);
 
   return (
     <div Style="height:100vh; margin-top:13vh; z-index:1; background-color:white">
@@ -308,6 +355,69 @@ export default function Content(props) {
                 role="alert"
               >
                 Your Answer is Posted <strong>Successfully</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </>
+          );
+        }
+      })()}
+
+      {(() => {
+        if (qvStatus === true) {
+          return (
+            <>
+              <div
+                className="alert alert-success alert-dismissible"
+                role="alert"
+              >
+                You Voted for Question <strong>Successfully</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </>
+          );
+        }
+      })()}
+
+      {(() => {
+        if (avStatus === true) {
+          return (
+            <>
+              <div
+                className="alert alert-success alert-dismissible"
+                role="alert"
+              >
+                You Voted for Answer <strong>Successfully</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </>
+          );
+        }
+      })()}
+
+      {(() => {
+        if (cantVoteStatus === true) {
+          return (
+            <>
+              <div
+                className="alert alert-warning alert-dismissible"
+                role="alert"
+              >
+                You can't vote again!
                 <button
                   type="button"
                   className="btn-close"
@@ -454,7 +564,11 @@ export default function Content(props) {
                           </p>
                         </div>
                       ))}
-                      {loginstatus === true ? <p onClick={() => setShow(!show)}>Add a comment</p> : <p onClick={() => navigate("/login")}>Add a comment</p>}
+                      {loginstatus === true ? (
+                        <p onClick={() => setShow(!show)}>Add a comment</p>
+                      ) : (
+                        <p onClick={() => navigate("/login")}>Add a comment</p>
+                      )}
                       {show && (
                         <div className="title">
                           <form

@@ -26,10 +26,16 @@ const AnswerSchema = new Schema({
         required: true
     },
 
-    votes:{
-        type:Number,
-        required:true
-    },
+    votes:[{
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User', 
+        },
+        direction: {
+          type: String,
+          enum: ['up', 'down'],
+        }
+    }],
 
     date:{
         type:Date,

@@ -5,6 +5,8 @@ import axios from "axios";
 import AdminSidebar from "./AdminSidebar";
 import { useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import BlockIcon from "@mui/icons-material/Block";
+import CheckIcon from "@mui/icons-material/Check";
 import Button from "@mui/material/Button";
 
 export default function AdminUser() {
@@ -52,6 +54,19 @@ export default function AdminUser() {
       });
   };
 
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      const response = await axios.put(`http://localhost:5000/api/admin/status/${id}`, {
+        status: status === "Y" ? "N" : "Y",
+      });
+      fetchUsers();
+      window.location.reload();
+    } catch (error) {
+      console.log(error.message);
+      alert("Error!");
+    }
+  };
+
   return (
     <div
       className="container"
@@ -95,6 +110,12 @@ export default function AdminUser() {
               >
                 Delete
               </th>
+              <th
+                style={{ width: "250px", textAlign: "center", height: "40px" }}
+                scope="col"
+              >
+                Status
+              </th>
             </tr>
           </thead>
         </table>
@@ -113,18 +134,7 @@ export default function AdminUser() {
                           height: "40px",
                         }}
                       >
-                        <button
-                          className="btn btn-outline-primary"
-                          style={{ height: "40px" }}
-                        >
-                          <NavLink
-                            to={{
-                              pathname: `/UserProfileAnalysis/${user.username}`,
-                            }}
-                          >
-                            {user.username}
-                          </NavLink>
-                        </button>
+                        {user.username}
                       </td>
                       <td
                         style={{
@@ -150,6 +160,23 @@ export default function AdminUser() {
                         >
                           {" "}
                           delete
+                        </Button>
+                      </td>
+                      <td
+                        style={{
+                          width: "250px",
+                          textAlign: "center",
+                          height: "40px",
+                        }}
+                      >
+                        <Button
+                          variant="outlined"
+                          startIcon={<BlockIcon />}
+                          aria-hidden="true"
+                          onClick={() => handleStatusUpdate(user._id, user.status)}
+                        >
+                          {" "}
+                          {user.status == 'Y' ? "Block" : "UnBlock"}
                         </Button>
                       </td>
                     </tr>

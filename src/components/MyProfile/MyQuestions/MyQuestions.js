@@ -24,31 +24,31 @@ export default function MyQuestions() {
   const [postPerPage] = useState(4);
   const [currentPage, setcurrentPage] = useState(1);
 
-  const fetchMemberQuestions = async () => {
-    let mQuestions = [];
-    const response = await fetch(
-      `http://localhost:5000/api/question/fetchquestions`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    ).then((response) => {
-      return response.json();
-    }).then((data) => {
-      if (data.length > 0) {
-        for (let member of data) {
-          if (member.members.length > 0) {
-            if (user && member.members.indexOf(user._id) != -1) {
-              mQuestions.push(member);
-            }
-          } 
-        }
-        setQuestions(mQuestions);
-      }
-    });
-  };
+  // const fetchMemberQuestions = async () => {
+  //   let mQuestions = [];
+  //   const response = await fetch(
+  //     `http://localhost:5000/api/question/fetchquestions`,
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   ).then((response) => {
+  //     return response.json();
+  //   }).then((data) => {
+  //     if (data.length > 0) {
+  //       for (let member of data) {
+  //         if (member.members.length > 0) {
+  //           if (user && member.members.indexOf(user._id) != -1) {
+  //             mQuestions.push(member);
+  //           }
+  //         } 
+  //       }
+  //       setQuestions(mQuestions);
+  //     }
+  //   });
+  // };
 
   const getUser = async () => {
     const currentUser = await fetch(
@@ -101,12 +101,12 @@ export default function MyQuestions() {
     fetchAllFilteredQuestions();
   }, [filters]);
 
-  useEffect(() => {
-    getUser();
-    if (user) {
-      fetchMemberQuestions();
-    }
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  //   if (user) {
+  //     fetchMemberQuestions();
+  //   }
+  // }, []);
 
   useEffect(() => {
     fetch(
@@ -142,7 +142,7 @@ export default function MyQuestions() {
           <input type="date" name="startDate" onChange={onChange} />
           <strong Style="display:inline">To</strong>
           <input type="date" name="endDate" onChange={onChange} />
-          <strong Style="display:inline">and in tag:</strong>
+          {/* <strong Style="display:inline">and in tag:</strong>
           <select name="tags" onChange={onChange}>
             <option value="none" selected disabled hidden>
               select a tag
@@ -150,12 +150,12 @@ export default function MyQuestions() {
             {usedTags.map((tag) => (
               <option value={tag}>{tag}</option>
             ))}
-          </select>
+          </select> */}
         </div>
-
+{/* 
         <div className="link-tag">
           <button onClick={() => fetchMemberQuestions()} className="btn btn-primary mr-2">Manage Member Questions</button>
-        </div>
+        </div> */}
 
         <div className="questions">
           <div className="question">
