@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useParams } from 'react-router-dom';
 import Sidebar from "../Sidebar/Sidebar";
 import "./questions.css";
 import "../Header/header.css";
@@ -7,6 +8,7 @@ import Posts from "./Posts";
 import Pagination from "./Pagination";
 
 export default function Search() {
+  const params = useParams();
   const location = useLocation();
   const [questions, setQuestions] = useState([]);
 
@@ -51,11 +53,31 @@ export default function Search() {
       .then((data) => setQuestions(data));
   };
 
+  const fetchQuestionsByTags = async (tag) => {
+    await fetch(`http://localhost:5000/api/question/search/${tag}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => setQuestions(data));
+  };
+
   useEffect(() => {
+    
     if (location.state !== null) {
       setQuestions(location.state);
     }
   });
+
+  useEffect(() => {
+    fetchQuestionsByTags(params.tag);
+  }, [params.tag]);
+
+
   const indexOfLastPost = currentPage * postPerPage;
   const indexOfFirstPost = indexOfLastPost - postPerPage;
   const currentPosts = questions.slice(indexOfFirstPost, indexOfLastPost);

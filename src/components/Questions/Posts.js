@@ -86,7 +86,7 @@ export default function Posts({ posts }) {
                 <div className="mt-3">
                   {question.tags.split(" ").map((tag) => (
                     <NavLink
-                      to={{ pathname: `/questionOntags/${tag.toLowerCase()}` }}
+                      to={{ pathname: `/search/${tag.toLowerCase()}` }}
                       className="question-tags"
                       Style="color:hsl(205,47%,42%); background-color: hsl(205,46%,92%); border-radius:5px;"
                     >

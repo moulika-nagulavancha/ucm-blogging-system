@@ -405,6 +405,28 @@ router.post("/search", async (req, res) => {
       title: { $in: keywords },
     });
 
+    if (questions && questions.length <= 0) {
+      questions = await Question.find({
+        tags: { $in: keywords },
+      });
+    }
+
+    res.json(questions);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal server error");
+  }
+});
+
+
+router.post("/search/:tag", async (req, res) => {
+  try {
+    const tag = new RegExp(req.params.tag.trim());
+
+    let questions = await Question.find({
+      tags: { $in: tag },
+    });
+
     res.json(questions);
   } catch (error) {
     console.log(error.message);

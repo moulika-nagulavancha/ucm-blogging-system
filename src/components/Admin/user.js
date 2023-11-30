@@ -6,7 +6,6 @@ import AdminSidebar from "./AdminSidebar";
 import { useEffect } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
-import CheckIcon from "@mui/icons-material/Check";
 import Button from "@mui/material/Button";
 
 export default function AdminUser() {

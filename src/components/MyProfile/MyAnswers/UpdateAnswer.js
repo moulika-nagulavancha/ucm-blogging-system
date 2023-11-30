@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import JoditEditor from "jodit-react";
-import parse from "html-react-parser";
 import { useParams } from 'react-router-dom';
 
 const config = {

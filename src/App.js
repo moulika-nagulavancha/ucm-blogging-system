@@ -55,6 +55,7 @@ function App() {
 
           {/* Search Question */}
           <Route path="/search" element={<Search />}></Route>
+          <Route path="/search/:tag" element={<Search />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

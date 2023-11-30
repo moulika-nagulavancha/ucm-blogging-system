@@ -67,7 +67,7 @@ function Register() {
         localStorage.setItem("since", month[mn] + " " + year);
 
         setTimeout(() => {
-          navigate("/");
+          navigate("/questions");
           window.location.reload(true);
         }, 2000);
       } else {
